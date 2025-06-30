@@ -71,6 +71,7 @@ print(f"Categorical columns: {categorical_columns}")
 print(f"Numerical columns: {numerical_columns}")
 
 # Create label encoder for target
+X = pd.concat([df_train, df_extra], ignore_index=True)
 le = LabelEncoder()
 y = le.fit_transform(df_train['Fertilizer Name'])
 X = df_train.drop(['Fertilizer Name'], axis=1)
@@ -115,7 +116,9 @@ model = XGBClassifier(
     colsample_bytree=0.6,
     colsample_bylevel=0.8,
     subsample=0.8,
-)
+    tree_method='hist',  # Use GPU for training
+    device ='cuda',  # Ensure the model uses GPU
+    )
 
 print("Learning...")
 model.fit(X_train_processed, y_train)
